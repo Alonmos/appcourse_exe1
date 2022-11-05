@@ -1,0 +1,356 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="Style.css" rel="stylesheet" />
+    <title>Matala1Web</title>
+
+
+    <script>
+
+
+        function init() {
+            dishes = [];//dishes to render when page loads.
+            totIngredients = [] //array of all the ingridients from all the dishes.
+            let in1 = new Ingredient("I1", "Cheese", "https://www.usdairy.com/optimize/getmedia/6ab03180-cc90-4a03-a339-13b540ecc8a5/american.jpg.jpg.aspx?format=webp", 34);
+            let in2 = new Ingredient("I2", "Tomato sauce", "https://media.eataly.com/media/catalog/product/cache/21/small_image/303x/9df78eab33525d08d6e5fb8d27136e95/_/5/_502522-pomodorini-di-collina-14.1-oz-mutti.jpg", 25);
+            let in3 = new Ingredient("I3", "Flour", "https://upload.wikimedia.org/wikipedia/commons/a/a8/Fresh_ramen_noodle_001.jpg", 138);
+            let in4 = new Ingredient("I4", "Olive", "https://media.istockphoto.com/photos/olives-on-white-picture-id1163001279?k=20&m=1163001279&s=612x612&w=0&h=kxIAJO9qMc_hrc-Hh_rO7I3mSh6BSDkGwDGyYFsFnt0=", 12);
+            totIngredients.push(in1);
+            totIngredients.push(in2);
+            totIngredients.push(in3);
+            totIngredients.push(in4);
+            let dish1 = new DishRecipe("Pizza", totIngredients.slice(0,4), 60, "bake", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZj01Kkek1YiGGZXU94iutsz40ihtK2eUreg&usqp=CAU")
+            dishes.push(dish1)
+            let strSet = `<div class="row">`
+            strSet += `<h1>The Dishs Center</h1>`
+            strSet += `</div>`//close header row
+            strSet += `<div class='row' id='buttonsdiv'>`
+            strSet += `<div class='col-12 col-md-6 mainbuttonDiv'><button class='addbtn' onclick='newRecipe()'>Add New Recipe</button></div>`;
+            strSet += `<div class='col-12 col-md-6 mainbuttonDiv'><button class='addbtn' onclick='newIngridient()'>Add New Ingridient</button></div>`;
+            strSet += `</div>`//close buttons row
+            document.getElementById("ph1").innerHTML = strSet;
+            let initDishes = ``;
+            for (var i = 0; i < dishes.length; i++) {
+                initDishes += dishes[i].renderDishRecipe();
+            }
+            document.getElementById("recepies").innerHTML = initDishes;
+
+        }
+
+        class Ingredient {
+            constructor(id, ingname, image, calories) {
+                this.id = id;
+                this.name = ingname;
+                this.image = image;
+                this.calories = parseInt(calories);
+            }
+            renderIngredient() {
+                let strING = `<div>`
+                strING += `<img src="${this.image}">`
+                strING += `<p>Name: ${this.name}</p>`
+                strING += `<p>Calories: ${this.calories}</p>`
+                strING += `</div>`
+                return strING;
+            }
+        }
+
+        class DishRecipe {
+            ingredients = [];
+            constructor(dishname, ingredientsarr, time, cookingMethod, image) {
+                this.dishname = dishname;
+                this.ingredients = ingredientsarr;
+                this.time = time;
+                this.cookingMethod = cookingMethod
+                this.image = image;
+            }
+
+
+            renderDishRecipe() {
+                let strDsih = '';
+                strDsih += `<div class="col-12 col-md-4">`
+                strDsih += `<div class='renderDishDiv'`
+                strDsih += `<h2>Dish Details<h2>`
+                strDsih += `<p>Dish Name: ${this.dishname}</p>`
+                strDsih += `<p>Coocking Time: ${this.time} Minutes</p>`
+                strDsih += `<p>Coocking Method: ${this.cookingMethod}</p>`
+                strDsih += `<img src="${this.image}">`
+                strDsih += `<p>Total Calories: ${this.getTotalCalories()}</p>`
+                strDsih += `<button id="openModalBtn" class="btn btn-primary" onclick="getDishingridients('${this.dishname}')" type="button" data-toggle="modal" data-target="#myModal">Open Ingredients</button>`;
+                strDsih += `</div>`//close renderDishDiv
+                strDsih +=`</div>`//close col
+                return strDsih;
+            }
+
+            getTotalCalories() {//calculates total calories at dish
+                let totcalories = parseInt("0");
+                for (var i = 0; i < this.ingredients.length; i++) {
+                    totcalories += this.ingredients[i].calories;
+                }
+                return totcalories;
+            }
+
+            getIngredients() {//render ingridients at dish
+                let strDishIngs = ``;
+                strDishIngs += `<div class='row'>`;
+                for (var i = 0; i < this.ingredients.length; i++) {
+                    strDishIngs += `<div class="col-4">`;
+                    strDishIngs += this.ingredients[i].renderIngredient()
+                    strDishIngs += `</div>`
+                }
+                document.getElementById("ph3").innerHTML = strDishIngs;
+            }
+        }
+
+        function getDishingridients(nameofDish) {//find the specific dish and render it's ingridients to the modal
+            for (var i = 0; i < dishes.length; i++) {
+                if (nameofDish == dishes[i].dishname) {
+                    dishes[i].getIngredients();
+                    return;
+                }
+            }
+        }
+
+        function newRecipe() {//render the form the add dish
+            let strAdd = `<div id='adish' class="addform">`//open form div
+            strAdd += `<div>`//open deatils div
+            strAdd += `<h4>Add New Recipe</h4><br>`
+            strAdd += `<p>Name:</p><input id='recname'><br>`
+            strAdd +=  `<label id="errNamerecip">please enter correct input </label ><br>`
+            strAdd += `<p>Time (Minutes):</p><input id='rectime'type='number' min="0"><br>`
+            strAdd +=`<label id="errTimerecip">please enter correct input </label><br>`
+            strAdd += `<p>Cooking Method:</p><input id='recmethod' type='text'><br>`
+            strAdd+=`<label id="errMethodrecip">please enter correct input</label><br>`
+            strAdd += `<p>Image (URL):</p><input id='recimg' type='url'><br>`
+            strAdd +=`<label id = "errImagerecip">please enter correct input</label><br>`
+            strAdd += `<p>Choose Ingridients:</p>`
+            strAdd += `<label id = "errChooseIng">please choose at least one ingredent</label><br>`
+            strAdd += `</div>`//close deatils div
+            strAdd += `<div>`//open ingredients & buttons div
+            strAdd += `<div class="row">`
+            for (var i = 0; i < totIngredients.length; i++) {//render all ingridients
+                strAdd += `<div class="col-12 col-md-6 divIng">`//open specific ingridient div
+                strAdd += `<input type="checkbox" id="c${totIngredients[i].id.slice(1)}" class="chckbxing">`
+                strAdd += totIngredients[i].renderIngredient();
+                strAdd += `</div>`//close specific ingridient div
+            }
+            strAdd += `</div>`//close ingredients row
+            strAdd += `<div class="row">`//open buttons row
+            strAdd += `<div class='col-12 col-lg-6 mainbuttonDiv'><button class='addbtn formbtn' onclick='addDsih()'>Submit</button></div>`;
+            strAdd += `<div class='col-12 col-lg-6 mainbuttonDiv'><button class='addbtn formbtn' onclick='document.getElementById("add").innerHTML =""'>Close</button></div>`;
+            strAdd += `</div>`//close buttons row
+            strAdd += `</div>`//cloes open ingredients & buttons div
+            strAdd += `</div>`//close form div
+            document.getElementById('add').innerHTML = strAdd;
+        }
+
+
+        function addDsih() {//add new dish to array of dishes
+            let name = document.getElementById("recname").value;
+            let chckbxingArr = document.getElementsByClassName("chckbxing")//array of the ingridients that the user can check
+            let dishIngridients = [];//array of the ingridients at the specific dish
+            for (var i = 0; i < chckbxingArr.length; i++) {
+                if (chckbxingArr[i].checked == true)
+                    dishIngridients.push(getCheckedIngredient(chckbxingArr[i].id))
+            }
+            let time = document.getElementById("rectime").value;
+            let Method = document.getElementById("recmethod").value;
+            let image = document.getElementById("recimg").value;
+            if (name == "") {
+                document.getElementById("recname").style.borderColor = "red";
+                document.getElementById("errNamerecip").style.display = "block";
+                window.scrollTo(0,0);
+                return;
+            }
+            else {
+                document.getElementById("recname").style.borderColor = "#3EB2FD";
+                document.getElementById("errNamerecip").style.display = "none";
+            }
+            if (time == "") {
+                document.getElementById("rectime").style.borderColor = "red";
+                document.getElementById("errTimerecip").style.display = "block";
+                window.scrollTo(0,0);
+                return;
+            }
+            else {
+                document.getElementById("rectime").style.borderColor = "#3EB2FD";
+                document.getElementById("errTimerecip").style.display = "none";
+            }
+            if (Method == "") {
+                document.getElementById("recmethod").style.borderColor = "red";
+                document.getElementById("errMethodrecip").style.display = "block";
+                window.scrollTo(0, 0);
+                return;
+            }
+            else {
+                document.getElementById("recmethod").style.borderColor = "#3EB2FD";
+                document.getElementById("errMethodrecip").style.display = "none";
+            }
+            if (image == "") {
+                document.getElementById("recimg").style.borderColor = "red";
+                document.getElementById("errImagerecip").style.display = "block";
+                window.scrollTo(0,0);
+                return;
+            }
+            else {
+                document.getElementById("recimg").style.borderColor = "#3EB2FD";
+                document.getElementById("errImagerecip").style.display = "none";
+            }
+            if (dishIngridients.length == 0) {
+                document.getElementById("adish").style.border = "1px solid";
+                document.getElementById("adish").style.borderColor = "red";
+                document.getElementById("errChooseIng").style.display = "block";
+                window.scrollTo(0,0);
+                return;
+            }
+            else {
+                document.getElementById("adish").style.border = "0px solid";
+                document.getElementById("errChooseIng").style.display = "none";
+            }
+            let dishrec = new DishRecipe(String(document.getElementById("recname").value), dishIngridients, String(document.getElementById("rectime").value), String(document.getElementById("recmethod").value), String(document.getElementById("recimg").value))
+            dishes.push(dishrec);
+            document.getElementById("add").innerHTML = "";
+            document.getElementById("recepies").innerHTML += dishes[parseInt(dishes.length) - 1].renderDishRecipe();
+            document.getElementById("ph4").innerHTML = "Dish Was Added Successfuly";
+            document.getElementById("successModal").style.display = "block";
+            document.getElementById("successModal").onclick = function () {
+                document.getElementById("successModal").style.display = "none";
+            }
+            window.onclick = function (event) {
+                if (event.target == document.getElementById("successModal")) {
+                    document.getElementById("successModal").style.display = "none";
+                }
+            }
+        }
+
+        function getCheckedIngredient(idnumber) {//return the checked ingredient
+            for (var i = 0; i < totIngredients.length; i++) {
+                if (idnumber.slice(1) == totIngredients[i].id.slice(1))
+                    return totIngredients[i];
+            }
+        }
+
+        function newIngridient() {//render the form the add ingridient
+            let strAddIng = `<div id='aingredient' class="addform">`//open form div
+            strAddIng += `<div>`//open deatils div
+            strAddIng += `<h4>Add New Ingridient</h4>`
+            strAddIng += `<p>Name:</p><input id='ingname' type='text'><br>`
+            strAddIng +=`<label id="errName">please enter correct input </label><br>`
+            strAddIng += `<p>Image (URL):</p><input id='ingimg' type='url'><br>`
+            strAddIng +=`<label id="errImage">please enter correct input </label><br>`
+            strAddIng += `<p>Calories:</p><input id='ingcal' type='number' min="0" ><br>`
+            strAddIng +=`<label id="errCal">please enter correct input </label><br>`
+            strAddIng += `</div>`//close deatils div
+            strAddIng += `<div class="row">`//open buttons row
+            strAddIng += `<div class='col-12 col-lg-6 mainbuttonDiv'><button class='addbtn formbtn' onclick='addIngridient()'>Submit</button></div>`;
+            strAddIng += `<div class='col-12 col-lg-6 mainbuttonDiv'><button class='addbtn formbtn' onclick='document.getElementById("add").innerHTML=""'>Close</button></div>`;
+            strAddIng += `</div>`//close buttons row
+            strAddIng += `</div>`//close form div
+            document.getElementById('add').innerHTML = strAddIng;
+        }
+
+        function addIngridient() {//add new dish to array of ingridients
+            let name = document.getElementById("ingname").value;//inputs validation
+            let image = document.getElementById("ingimg").value;
+            let calories = document.getElementById("ingcal").value;
+            if (name == "") {
+                document.getElementById("ingname").style.borderColor = "red";
+                document.getElementById("errName").style.display = "block";
+                window.scrollTo(0,0);
+                return;
+            }
+            else {
+                document.getElementById("ingname").style.borderColor = "#3EB2FD";
+                document.getElementById("errName").style.display = "none";
+            }
+            if (image == "") {
+                document.getElementById("ingimg").style.borderColor = "red";
+                document.getElementById("errImage").style.display = "block";
+                window.scrollTo(0,0);
+                return;
+            }
+            else {
+                document.getElementById("ingimg").style.borderColor = "#3EB2FD";
+                document.getElementById("errImage").style.display = "none";
+            }
+            if (calories == "") {
+                document.getElementById("ingcal").style.borderColor = "red";
+                document.getElementById("errCal").style.display = "block";
+                window.scrollTo(0,0);
+                return;
+            }
+            else {
+                document.getElementById("ingcal").style.borderColor = "#3EB2FD";
+                document.getElementById("errCal").style.display = "none";
+
+            }
+            let newIngridient = new Ingredient("I"+totIngredients.length+1, document.getElementById('ingname').value, document.getElementById('ingimg').value, document.getElementById('ingcal').value)
+            totIngredients.push(newIngridient);
+            document.getElementById("add").innerHTML = "";
+            document.getElementById("ph4").innerHTML = "Ingredient Was Added Successfuly";
+            document.getElementById("successModal").style.display = "block";
+            document.getElementById("successModal").onclick = function () {
+                document.getElementById("successModal").style.display = "none";
+            }
+            window.onclick = function (event) {
+                if (event.target == document.getElementById("successModal")) {
+                    document.getElementById("successModal").style.display = "none";
+                }
+            }
+
+
+        }
+
+    </script>
+</head>
+<body onload="init()">
+    <div class="container">
+        <div class="row" id="ph1"></div>
+        <div class="row" id="add"></div>
+        <div class="row" id="recepies"></div>
+        <!-- The Ingredients Modal -->
+        <div class="modal" id="myModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Dish's Ingredients</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div id="ph3" class="modal-body">
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" id="closeModalBtn" data-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+
+         <!--ingredients/dishs addition success Modal--> 
+        <div class="modal" id="successModal">
+            <div class="modal-dialog">
+                <div id="successMC" class="modal-content">
+                     <!--Modal body--> 
+                    <div id="ph4" class="modal-body">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>

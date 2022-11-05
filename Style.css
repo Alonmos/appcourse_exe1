@@ -1,0 +1,143 @@
+﻿html {
+    scroll-behavior: smooth;
+}
+
+
+#buttonsdiv {
+    margin: 0px auto;
+}
+
+.container{
+    margin: 0px auto;
+    padding-top: 70px;
+    text-align: center;
+    height: 100%;
+}
+
+p{
+    font-family:Calibri;
+    font-size:18px;
+}
+
+
+#ph1 h1 {
+    color: tomato;
+    font-family: Calibri;
+    text-align: center;
+    margin: 0px auto;
+}
+
+.row{
+    width:100%;
+    margin-right:0px;
+    margin-left:0px;
+}
+
+
+.container .mainbuttonDiv {
+    margin: 0px auto;
+    float: left;
+    margin-top: 30px;
+    width: 50%;
+}
+
+.addbtn {
+    background-color: tomato;
+    padding: 5px 50px 5px 50px;
+    border-color: white;
+    font-size: 26px;
+    color: white;
+    font-family: Calibri;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    margin-bottom:15px;
+}
+
+.formbtn {
+    padding: 5px 10px;
+    width:100px;
+    font-size:16px;
+}
+
+.addbtn:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+
+img {
+    height: 30%;
+    width:30%;
+    margin: 10px auto;
+}
+
+.divIng {
+    float: left;
+    font-size:20px;
+    height:100%;
+}
+
+.addform {
+    margin: 30px auto;
+    height: 100%;
+    border-radius: 12px;
+    width: 300px;
+    box-shadow: 0px 0px 20px 0px lightgreen;
+}
+
+ .row >  #addrecp{
+    width: 300px;
+}
+
+.row > #addingdnt {
+    width: 250px;
+}
+
+.renderDishDiv {
+    margin: 5px 5px 5px 5px;
+    font-family: Calibri;
+    font-size: 26px;
+    border-radius: 12px;
+    box-shadow: 0px 0px 20px 0px lightgreen;
+    padding-bottom:5px;
+}
+
+#closeModalBtn {
+    background-color: tomato;
+    border-radius: 12px;
+}
+
+
+#openModalBtn {
+    background-color: lightgreen;
+    border-radius: 12px;
+}
+
+#errImage, #errCal, #errNamerecip, #errMethodrecip, #errTimerecip, #errName, #errImagerecip, #errChooseIng {
+    color: red;
+    display: none;
+}
+
+#successModal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: black;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+#successMC {
+    height: 100px;
+    margin-top: 200px;
+}
+
+#ph4 {
+    box-shadow: 0px 0px 20px 0px #24c932;
+    font-size: 26px;
+}
+
+
